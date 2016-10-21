@@ -274,14 +274,6 @@ describe("Authenticated Endpoints: standard key", function() {
         bfx_rest.cancel_multiple_orders([orders[0].id, orders[1].id], cb)
       })
     });
-    //TODO API needs to be fixed, never throws error
-    it.skip("should cancel all orders", function(done) {
-      var errCB = function(err, value) {
-        expect(value).ok;
-        return done();
-      };
-      bfx_rest.cancel_all_orders(errCB);
-    });
     it("should replace an order", function(done) {
       var cb  = function(err, value) {
         expect(value).ok;
@@ -291,8 +283,16 @@ describe("Authenticated Endpoints: standard key", function() {
         bfx_rest.replace_order(orders[0].id, "BTCUSD", "0.01", "0.01", "bitfinex", "buy", "exchange limit", cb)
       })
     });
+    //TODO API needs to be fixed, never throws error
+    it("should cancel all orders", function(done) {
+      var errCB = function(err, value) {
+        expect(value).ok;
+        return done();
+      };
+      bfx_rest.cancel_all_orders(errCB);
+    });
     //TODO throws 404 error, is that intentional?
-    it.skip("should get an orders status", function(done) {
+    it("should get an orders status", function(done) {
       var cb = function(err, value) {
         expect(value).ok
         return done();
@@ -447,82 +447,4 @@ describe("Authenticated Endpoints: standard key", function() {
     };
     bfx_rest.withdraw('bitcoin', "exchange", '0.01', "abc", errCB);
   });
-});
-describe("Authenticated Endpoints: read-only key", function() {
-  before(function() {
-    var bfx = new BFX();
-    var bfx_rest = bfx.rest;
-  });
-  it("should get account info");
-  it("should get a deposit address");
-  describe("orders", function() {
-    it("should place a new order");
-    it("should place multiple orders");
-    it("should cancel an order");
-    it("should cancel multiple orders");
-    it("should cancel all orders");
-    it("should replace an order");
-    it("should get an orders status");
-    it("should get active orders");
-  });
-  describe("positions", function() {
-    it("should get active positions");
-    it("should claim a position");
-  });
-  describe("historical data", function() {
-    it("should get balance history");
-    it("should get deposit/withdrawal history");
-    it("should get past trades");
-  });
-  describe("margin funding", function() {
-    it("should place a new offer");
-    it("should cancel an offer");
-    it("should get an offer status");
-    it("should get active credits");
-    it("should get active funding used in a margin position");
-    it("should get total taken funds");
-  });
-  it("should get wallet balances");
-  it("should get margin information");
-  it("should transfer between wallets");
-  it("should submit a withdrawal");
-});
-describe("Authenticated Endpoints: withdrawal-enabled key", function() {
-  before(function() {
-    var bfx = new BFX();
-    var bfx_rest = bfx.rest;
-  });
-  it("should get account info");
-  it("should get a deposit address");
-  describe("orders", function() {
-    it("should place a new order");
-    it("should place multiple orders");
-    it("should cancel an order");
-    it("should cancel multiple orders");
-    it("should cancel all orders");
-    it("should replace an order");
-    it("should get an orders status");
-    it("should get active orders");
-  });
-  describe("positions", function() {
-    it("should get active positions");
-    it("should claim a position");
-  });
-  describe("historical data", function() {
-    it("should get balance history");
-    it("should get deposit/withdrawal history");
-    it("should get past trades");
-  });
-  describe("margin funding", function() {
-    it("should place a new offer");
-    it("should cancel an offer");
-    it("should get an offer status");
-    it("should get active credits");
-    it("should get active funding used in a margin position");
-    it("should get total taken funds");
-  });
-  it("should get wallet balances");
-  it("should get margin information");
-  it("should transfer between wallets");
-  it("should submit a withdrawal");
 });
