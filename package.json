@@ -3,8 +3,12 @@
   "version": "0.2.9",
   "description": "Node reference library for Bitfinex API",
   "main": "index.js",
+  "watch": {
+      "test": "{test}/*.js"
+    },
   "scripts": {
     "test": "NODE_ENV=test istanbul cover _mocha -- -R spec -b --recursive",
+    "watch": "npm-watch",
     "docs": "node_modules/jsdoc-to-markdown/bin/cli.js ws.js > DOCS.md"
   },
   "repository": {

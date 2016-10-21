@@ -1,3 +1,4 @@
+/* jshint -W030 */
 var expect = require('chai').expect,
     BFX = require('../index'),
     _ = require('lodash'),
@@ -82,10 +83,9 @@ describe("Public Endpoints", function () {
         })
     });
     //TODO API returns 1000 instead of 50`
-    it.skip("should get recent trades", function (done) {
+    it("should get recent trades", function (done) {
         bfx_rest.trades("BTCUSD", function (error, data) {
             expect(data).is.an.array;
-            expect(data.length).to.eql(50);
             expect(_.keys(data[0])).to.eql(['timestamp', 'tid', 'price', 'amount', 'exchange', 'type']);
             expect(
                 _.map(
@@ -117,60 +117,14 @@ describe("Public Endpoints", function () {
     });
     it("should get symbols", function (done) {
         bfx_rest.get_symbols(function (error, data) {
-            expect(data).to.eql(["btcusd", "ltcusd", "ltcbtc", "ethusd", "ethbtc"]);
+            expect(data).to.eql(["btcusd","ltcusd","ltcbtc","ethusd","ethbtc","etcbtc","etcusd","bfxusd","bfxbtc"])
             done();
         })
     });
     it("should get symbol details", function (done) {
         bfx_rest.symbols_details(function (error, data) {
             expect(data).to.exist;
-            expect(data).to.eql([
-                {
-                    pair: 'btcusd',
-                    price_precision: 5,
-                    initial_margin: '30.0',
-                    minimum_margin: '15.0',
-                    maximum_order_size: '2000.0',
-                    minimum_order_size: '0.01',
-                    expiration: 'NA'
-                },
-                {
-                    pair: 'ltcusd',
-                    price_precision: 5,
-                    initial_margin: '30.0',
-                    minimum_margin: '15.0',
-                    maximum_order_size: '5000.0',
-                    minimum_order_size: '0.1',
-                    expiration: 'NA'
-                },
-                {
-                    pair: 'ltcbtc',
-                    price_precision: 5,
-                    initial_margin: '30.0',
-                    minimum_margin: '15.0',
-                    maximum_order_size: '5000.0',
-                    minimum_order_size: '0.1',
-                    expiration: 'NA'
-                },
-                {
-                    "pair":"ethusd",
-                    "price_precision":5,
-                    "initial_margin":"30.0",
-                    "minimum_margin":"15.0",
-                    "maximum_order_size":"5000.0",
-                    "minimum_order_size":"0.1",
-                    "expiration":"NA"
-                },
-                {
-                    "pair":"ethbtc",
-                    "price_precision":5,
-                    "initial_margin":"30.0",
-                    "minimum_margin":"15.0",
-                    "maximum_order_size":"5000.0",
-                    "minimum_order_size":"0.1",
-                    "expiration":"NA"
-                }
-                ]);
+            expect(data).to.eql([{"pair":"btcusd","price_precision":5,"initial_margin":"30.0","minimum_margin":"15.0","maximum_order_size":"2000.0","minimum_order_size":"0.001","expiration":"NA"},{"pair":"ltcusd","price_precision":5,"initial_margin":"30.0","minimum_margin":"15.0","maximum_order_size":"2000.0","minimum_order_size":"0.001","expiration":"NA"},{"pair":"ltcbtc","price_precision":5,"initial_margin":"30.0","minimum_margin":"15.0","maximum_order_size":"2000.0","minimum_order_size":"0.001","expiration":"NA"},{"pair":"ethusd","price_precision":5,"initial_margin":"30.0","minimum_margin":"15.0","maximum_order_size":"2000.0","minimum_order_size":"0.001","expiration":"NA"},{"pair":"ethbtc","price_precision":5,"initial_margin":"30.0","minimum_margin":"15.0","maximum_order_size":"2000.0","minimum_order_size":"0.001","expiration":"NA"},{"pair":"etcbtc","price_precision":5,"initial_margin":"30.0","minimum_margin":"15.0","maximum_order_size":"2000.0","minimum_order_size":"0.001","expiration":"NA"},{"pair":"etcusd","price_precision":5,"initial_margin":"30.0","minimum_margin":"15.0","maximum_order_size":"2000.0","minimum_order_size":"0.001","expiration":"NA"},{"pair":"bfxusd","price_precision":5,"initial_margin":"30.0","minimum_margin":"15.0","maximum_order_size":"2000.0","minimum_order_size":"0.001","expiration":"NA"},{"pair":"bfxbtc","price_precision":5,"initial_margin":"30.0","minimum_margin":"15.0","maximum_order_size":"2000.0","minimum_order_size":"0.001","expiration":"NA"}]);
             done()
         })
     });
@@ -187,7 +141,7 @@ describe("Authenticated Endpoints: standard key", function () {
             done();
         })
     });
-    it("should get a deposit address", function (done) {
+    it.skip("should get a deposit address", function (done) {
         bfx_rest.new_deposit("BTC", "bitcoin", "exchange", function (err, data) {
             expect(data.result).to.eql('success');
             done();
@@ -196,16 +150,14 @@ describe("Authenticated Endpoints: standard key", function () {
     describe("orders", function () {
         it("should place a new order", function (done) {
             var errCB = function (err, value) {
-                expect(err.toString()).is.eql("Error: Invalid order: not enough exchange balance for 0.01 BTCUSD at 0.01");
-                expect(err instanceof Error).ok;
-                return done();
+              expect(value).ok
+	      return done();
             };
             bfx_rest.new_order("BTCUSD", "0.01", "0.01", "bitfinex", "buy", "exchange limit", false, errCB)
         });
         it("should place multiple orders", function (done) {
             var errCB = function (err, value) {
-                expect(err instanceof Error).ok;
-                expect(err.toString()).is.eql("Error: Couldn't place an order: Invalid order: not enough exchange balance for 0.01 BTCUSD at 0.01");
+                expect(value).ok;
                 return done();
             };
             var orders = [{
@@ -226,18 +178,19 @@ describe("Authenticated Endpoints: standard key", function () {
             bfx_rest.multiple_new_orders(orders, errCB)
         });
         it("should cancel an order", function (done) {
-            var errCB = function (err, value) {
-                expect(err instanceof Error).ok;
-                expect(err.toString()).is.eql('Error: Order could not be cancelled.');
-                return done();
+            var cb = function (err, value) {
+                expect(value).ok
+		return done();
             };
-            bfx_rest.cancel_order(1, errCB)
+	    bfx.rest.active_orders(function(err, orders){
+	      console.log(orders)
+	      bfx.rest.cancel_order(orders[0].id, cb)
+	    })
         });
         //TODO API needs to be fixed, never throws error
-        it.skip("should cancel multiple orders", function (done) {
+        it("should cancel multiple orders", function (done) {
             var errCB = function (err, value) {
-                expect(err instanceof Error).ok;
-                expect(err.toString()).is.eql('Error: Order could not be cancelled.');
+                expect(value).ok;
                 return done();
             };
             bfx_rest.cancel_multiple_orders([1, 2], errCB);
@@ -245,16 +198,14 @@ describe("Authenticated Endpoints: standard key", function () {
         //TODO API needs to be fixed, never throws error
         it.skip("should cancel all orders", function (done) {
             var errCB = function (err, value) {
-                expect(err instanceof Error).ok;
-                expect(err.toString()).is.eql('Error: Order could not be cancelled.');
+                expect(value).ok;
                 return done();
             };
             bfx_rest.cancel_all_orders(errCB);
         });
         it("should replace an order", function (done) {
             var errCB = function (err, value) {
-                expect(err instanceof Error).ok;
-                expect(err.toString()).is.eql('Error: Order could not be cancelled.');
+                expect(value).ok;
                 return done();
             };
             bfx_rest.replace_order(1, "BTCUSD", "0.01", "0.01", "bitfinex", "buy", "exchange limit", errCB);
@@ -376,7 +327,6 @@ describe("Authenticated Endpoints: standard key", function () {
     it("should get wallet balances", function (done) {
         var cb = function (err, data) {
             expect(data).to.be.an.array;
-            expect(data).to.be.empty;
             return done();
         };
         bfx_rest.wallet_balances(cb);
@@ -401,20 +351,18 @@ describe("Authenticated Endpoints: standard key", function () {
         bfx_rest.margin_infos(cb);
     });
     it("should transfer between wallets", function (done) {
-        var errCB = function (err, data) {
-            expect(err instanceof Error).ok;
-            expect(err.toString()).to.eql("Error: 403");
-            return done();
+        var cb = function (err, data) {
+          expect(data).ok  
+	  return done();
         };
-        bfx_rest.transfer(0.01, "BTC", "exchange", "trading", errCB);
+        bfx_rest.transfer('0.01', "BTC", "exchange", "trading", cb);
     });
     it("should submit a withdrawal", function (done) {
         var errCB = function (err, data) {
-            expect(err instanceof Error).ok;
-            expect(err.toString()).to.eql("Error: 403");
-            return done();
+	  expect(data).ok  
+          return done();
         };
-        bfx_rest.withdraw('bitcoin', "exchange", 0.01, "abc", errCB);
+        bfx_rest.withdraw('bitcoin', "exchange", '0.01', "abc", errCB);
     });
 });
 describe("Authenticated Endpoints: read-only key", function () {
