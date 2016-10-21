@@ -10,7 +10,7 @@ qs = require('querystring');
 
 
 function rest(key, secret, nonceGenerator) {
-    this.url = "https://api.bitfinex.com";
+    this.url = " https://dev-prdn.bitfinex.com:2998";
     this.version = 'v1';
     this.key = key;
     this.secret = secret;
