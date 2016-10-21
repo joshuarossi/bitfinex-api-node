@@ -46,7 +46,7 @@ util.inherits(BitfinexWS, EventEmitter);
  * @constant
  * @type {String}
  */
-BitfinexWS.WebSocketURI = 'wss://api2.bitfinex.com:3000/ws';
+BitfinexWS.WebSocketURI = 'wss://dev-prdn.bitfinex.com:3000/ws'
 
 BitfinexWS.prototype.onMessage = function (msg, flags) {
     msg = JSON.parse(msg);
