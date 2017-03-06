@@ -12,6 +12,7 @@ class Rest2 {
       return ++this.nonce
     }
   }
+  
   generic_callback(err, result) {
     console.log(err, result)
   }
@@ -38,9 +39,9 @@ class Rest2 {
     payload = new Buffer(JSON.stringify(payload)).toString('base64')
     signature = crypto.createHmac("sha384", this.secret).update(payload).digest('hex')
     headers = {
-      'X-BFX-APIKEY': this.key,
-      'X-BFX-PAYLOAD': payload,
-      'X-BFX-SIGNATURE': signature
+      'BFX-APIKEY': this.key,
+      'BFX-PAYLOAD': payload,
+      'BFX-SIGNATURE': signature
     }
     return request({
       url: url,
